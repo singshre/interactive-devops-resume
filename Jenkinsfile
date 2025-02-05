@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        git 'https://github.com/Singshre/interactive-devops-resume.git'
+        git branch: 'main', url: 'https://github.com/Singshre/interactive-devops-resume.git'
                     } catch (Exception e) {
                         error "Failed to clone repository: ${e.message}"
                     }
