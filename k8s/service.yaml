@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: interactive-resume-service
+spec:
+  selector:
+    app: interactive-resume
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: NodePort
+
