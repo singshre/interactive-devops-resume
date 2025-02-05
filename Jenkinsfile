@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     try {
-        git branch: 'main', url: 'https://github.com/Singshre/interactive-devops-resume.git'
+                        git branch: 'main', url: 'https://github.com/Singshre/interactive-devops-resume.git'
                     } catch (Exception e) {
                         error "Failed to clone repository: ${e.message}"
                     }
@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        docker.withRegistry('', DOCKER_HUB_CREDENTIALS) {
+                        docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
                             dockerImage.push()
                             dockerImage.push('latest')
                         }
