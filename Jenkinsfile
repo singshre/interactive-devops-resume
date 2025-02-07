@@ -3,18 +3,13 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
+        IMAGE_NAME = "singshre2025/interactive-resume" // Define image name once
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                script {
-                    try {
-                        git branch: 'main', url: 'https://github.com/Singshre/interactive-devops-resume.git'
-                    } catch (Exception e) {
-                        error "Failed to clone repository: ${e.message}"
-                    }
-                }
+                git branch: 'main', url: 'https://github.com/Singshre/interactive-devops-resume.git'
             }
         }
 
@@ -22,7 +17,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        dockerImage = docker.build("singshre2025/interactive-resume:${env.BUILD_NUMBER}")
+                        dockerImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
                     } catch (Exception e) {
                         error "Failed to build Docker image: ${e.message}"
                     }
@@ -36,7 +31,7 @@ pipeline {
                     try {
                         withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials')]) {
                             dockerImage.push()
-                            dockerImage.push('latest')
+                            dockerImage.push('latest') // Consider if you *really* need a latest tag
                         }
                     } catch (Exception e) {
                         error "Failed to push Docker image: ${e.message}"
@@ -49,9 +44,9 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh '''
-                            kubectl set image deployment/interactive-resume interactive-resume=singshre2025/interactive-resume:${BUILD_NUMBER}
-                        '''
+                        sh """
+                            kubectl set image deployment/interactive-resume interactive-resume=${IMAGE_NAME}:${env.BUILD_NUMBER}
+                        """
                     } catch (Exception e) {
                         error "Failed to deploy to Kubernetes: ${e.message}"
                     }
