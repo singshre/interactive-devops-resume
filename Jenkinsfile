@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
+                        withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials')]) {
                             dockerImage.push()
                             dockerImage.push('latest')
                         }
